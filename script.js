@@ -6,12 +6,26 @@ const mQuoteText      = document.getElementById("quote");
 const mAuthorText     = document.getElementById("author");
 const mTwitterButton  = document.getElementById("twitter");
 const mNewQuoteButton = document.getElementById("new-quote");
+const mLoader         = document.getElementById("loader");
 
 // Quote attributes
 let mApiQuotes = [];
 
+// Show loadning animation
+function showLoadingSpinner() {
+    mLoader.hidden         = false;
+    mQuoteContainer.hidden = true;  // we're only gonna see loading when it's loading :|
+}
+
+// Hide loading
+function removeLoadingSpinner() {
+    mLoader.hidden         = true;
+    mQuoteContainer.hidden = false; // show quote when we've done loading
+}
+
 // Show new quote
 function newQuote() {
+    showLoadingSpinner();
     // Pick a random quote from mApiQuotes array
     const vQuote = mApiQuotes[Math.floor(Math.random() * mApiQuotes.length)];
 
@@ -28,7 +42,10 @@ function newQuote() {
     } else {
         mQuoteText.classList.remove("long-quote");
     }
+
+    // Set quote and hide loader
     mQuoteText.textContent  = vQuote.text;
+    removeLoadingSpinner();
 }
 
 // Get and show quote locally
@@ -38,7 +55,8 @@ function newQuote() {
 // }
 
 // Get quotes from API
-async function getQuotes() { // run at any time independently
+async function getQuotesFromAPI() { // run at any time independently
+    showLoadingSpinner();
     const vApiUrl = "https://type.fit/api/quotes";
     try {
         const vResponse = await fetch(vApiUrl); // only set vReponse when the data is avaible from fetch, or else vResponse = undefined
@@ -48,6 +66,9 @@ async function getQuotes() { // run at any time independently
     } catch (aError) {
         alert(aError)
         // Catch Error Here
+
+        // resend another request (with an optional counter)
+        getQuotesFromAPI();
     }
 }
 
@@ -62,6 +83,6 @@ mNewQuoteButton.addEventListener("click", newQuote);
 mTwitterButton.addEventListener('click', tweetQuote);
 
 // On load
-getQuotes();
+getQuotesFromAPI();
 
 // newLocalQuote();
