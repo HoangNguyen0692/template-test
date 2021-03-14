@@ -4,7 +4,7 @@
 const mQuoteContainer = document.getElementById("quote-container");
 const mQuoteText      = document.getElementById("quote");
 const mAuthorText     = document.getElementById("author");
-const mAuthorButton   = document.getElementById("twitter");
+const mTwitterButton  = document.getElementById("twitter");
 const mNewQuoteButton = document.getElementById("new-quote");
 
 // Quote attributes
@@ -50,6 +50,16 @@ async function getQuotes() { // run at any time independently
         // Catch Error Here
     }
 }
+
+// Tweet quote
+function tweetQuote() {
+    const vTwitterUrl = `https://twitter.com/intent/tweet?text=${mQuoteText.textContent} - ${mAuthorText.textContent}`; // `` template string to pass parameters
+    window.open(vTwitterUrl, '_blank'); // open Twitter in a new tab
+}
+
+// Event listeners
+mNewQuoteButton.addEventListener("click", newQuote);
+mTwitterButton.addEventListener('click', tweetQuote);
 
 // On load
 getQuotes();
